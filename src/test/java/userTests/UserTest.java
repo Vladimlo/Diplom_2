@@ -1,10 +1,11 @@
 package userTests;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.example.user.RandomUser;
 import org.example.user.User;
 import org.example.user.UserClient;
-import org.example.user.UserCreds;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,32 +16,36 @@ public class UserTest {
     UserClient userClient;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         user = RandomUser.getRandomUser();
         userClient = new UserClient();
     }
 
     @Test
-    public void createUser(){
+    @DisplayName("Проверка создания пользователя")
+    public void createUser() {
         ValidatableResponse createUserResponse = userClient.create(user);
         createUserResponse.statusCode(200).and().assertThat().body("success", equalTo(true));
-        //тут нужно удалить пользователя
     }
 
     @Test
-    public void  cannotCreateIdenticalUsers(){
+    @DisplayName("Проверка создания существующего пользователя")
+    public void cannotCreateIdenticalUsers() {
         userClient.create(user);
-        //тут нужно удалить пользователя
 
         ValidatableResponse createUserResponse = userClient.create(user);
-        //тут нужно удалить пользователя
         createUserResponse.statusCode(403);
     }
 
     @Test
-    public void passwordIsRequariedToCreate(){
+    @DisplayName("Проверка создания пользователя без указания пароля")
+    public void passwordIsRequariedToCreate() {
         ValidatableResponse createUserResponse = userClient.create(user.setPassword(null));
         createUserResponse.statusCode(403);
-        //тут нужно удалить пользователя
+    }
+
+    @After
+    public void tearDown() {
+        userClient.delete();
     }
 }

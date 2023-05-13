@@ -1,4 +1,4 @@
-package userTests;
+package user_tests;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
